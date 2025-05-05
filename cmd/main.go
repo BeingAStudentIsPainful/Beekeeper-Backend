@@ -1,16 +1,21 @@
 package main
 
 import (
-	"beekeeper-backend/internal/database"
-	"beekeeper-backend/internal/utils"
-	"fmt"
+	"beekeeper-backend/internal/config"
 	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	utils.LoadEnv()
-	database.ConnectDatabase()
+	config.Initialization()
 
 	port := os.Getenv("PORT")
-	fmt.Println(port)
+	if port == "" {
+		port = "8000"
+	}
+
+	app := gin.Default()
+
+	app.Run(":" + port)
 }
