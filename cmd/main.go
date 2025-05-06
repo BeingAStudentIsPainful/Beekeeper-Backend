@@ -1,6 +1,7 @@
 package main
 
 import (
+	"beekeeper-backend/internal/api/routes"
 	"beekeeper-backend/internal/config"
 	"os"
 
@@ -16,6 +17,9 @@ func main() {
 	}
 
 	app := gin.Default()
+	api := app.Group("/api")
+
+	routes.EntryRoutes(api)
 
 	app.Run(":" + port)
 }
