@@ -9,5 +9,5 @@ import (
 func Initialization() {
 	utils.LoadEnv()
 	database.ConnectDatabase()
-	database.DB.AutoMigrate(&models.Hive{}, &models.Log{})
+	database.DB.AutoMigrate(&models.Hive{}, &models.Entry{})
 }

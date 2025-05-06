@@ -10,5 +10,5 @@ type Hive struct {
 	Description string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-	Logs        []Log `gorm:"constraint:OnDelete:CASCADE"`
+	Entries     []Entry `gorm:"constraint:OnDelete:CASCADE"`
 }
