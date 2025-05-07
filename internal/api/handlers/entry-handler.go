@@ -33,3 +33,18 @@ func CreateEntry(c *gin.Context) {
 
 	c.JSON(201, entry)
 }
+
+func GetEntryByID(c *gin.Context){
+	id := c.Param("id")
+	
+	var entry models.Entry
+	if err := database.DB.First(&entry, id).Error; err != nil{
+		c.JSON(404, gin.H{
+			"error": "Entry not found",
+		})
+	}
+
+	c.JSON(200, gin.H{
+		"data": entry,
+	})
+}
