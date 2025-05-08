@@ -7,9 +7,9 @@ import (
 )
 
 func EntryRoutes(app *gin.RouterGroup) {
-	entryRoutes := app.Group("/entries")
+	entryRoutes := app.Group("/tasks")
 
-	entryRoutes.POST("/", handlers.CreateEntry)
-	entryRoutes.GET("/:id", handlers.GetEntryByID)
+	entryRoutes.POST("/", handlers.CreateTask)
+	entryRoutes.GET("/:id", handlers.GetTaskByID)
 
 }
