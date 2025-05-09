@@ -4,8 +4,9 @@ import "time"
 
 type Hive struct {
 	ID        uint `gorm:"primaryKey"`
+	HiveName  int  `gorm:"not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Logs      []Log  `gorm:"constraint:OnDelete:CASCADE"`
-	Tasks     []Task `gorm:"constraint:OnDelete:CASCADE"`
+	Logs      []Log  `gorm:"foreignKey:HiveID;constraint:OnDelete:CASCADE"`
+	Tasks     []Task `gorm:"foreignKey:HiveID;constraint:OnDelete:CASCADE"`
 }

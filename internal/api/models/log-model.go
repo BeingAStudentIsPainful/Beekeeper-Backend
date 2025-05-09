@@ -7,4 +7,5 @@ type Log struct {
 	HiveID    uint   `gorm:"not null"`
 	Content   string `gorm:"not null"`
 	CreatedAt time.Time
+	UpdatedAt time.Time
 }

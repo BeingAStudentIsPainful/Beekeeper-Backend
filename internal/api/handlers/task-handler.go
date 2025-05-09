@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Needs to be in separate function, DRY
 func CreateTask(c *gin.Context) {
 	var input types.CreateEntryInput
 
@@ -20,8 +19,8 @@ func CreateTask(c *gin.Context) {
 	}
 
 	task := models.Task{
-		Content: input.Content,
 		HiveID:  input.HiveID,
+		Content: input.Content,
 	}
 
 	if err := database.DB.Create(&task).Error; err != nil {
@@ -37,14 +36,14 @@ func CreateTask(c *gin.Context) {
 func GetTaskByID(c *gin.Context) {
 	id := c.Param("id")
 
-	var entry models.Task
-	if err := database.DB.First(&entry, id).Error; err != nil {
+	var task models.Task
+	if err := database.DB.First(&task, id).Error; err != nil {
 		c.JSON(404, gin.H{
-			"error": "Entry not found",
+			"error": "Task not found",
 		})
 	}
 
 	c.JSON(200, gin.H{
-		"data": entry,
+		"data": task,
 	})
 }
