@@ -4,10 +4,14 @@ import (
 	"beekeeper-backend/internal/api/models"
 	"beekeeper-backend/internal/database"
 	"beekeeper-backend/internal/utils"
+
+	"gorm.io/gorm"
 )
 
-func Initialization() {
+func Initialization() *gorm.DB {
 	utils.LoadEnv()
-	database.ConnectDatabase()
-	database.DB.AutoMigrate(&models.Hive{}, &models.Log{}, &models.Task{})
+	db := database.ConnectDatabase()
+	db.AutoMigrate(&models.Hive{}, &models.Log{}, &models.Task{})
+
+	return db
 }

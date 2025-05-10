@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	config.Initialization()
+	db := config.Initialization()
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -19,7 +19,7 @@ func main() {
 	app := gin.Default()
 	api := app.Group("/api")
 
-	routes.EntryRoutes(api)
+	routes.TaskRoutes(api, db)
 
 	app.Run(":" + port)
 }
