@@ -8,11 +8,15 @@ import (
 )
 
 func TaskRoutes(app *gin.RouterGroup, db *gorm.DB) {
-	handler := handlers.TaskHandler{DB: db}
+	handler := handlers.TaskHandler{
+		BaseHandler: handlers.BaseHandler{DB: db},
+	}
 
 	taskRoutes := app.Group("/tasks")
 
 	taskRoutes.POST("/", handler.CreateTask)
+	taskRoutes.GET("/", handler.GetAllTasks)
 	taskRoutes.GET("/:id", handler.GetTaskByID)
-
+	taskRoutes.PATCH("/:id", handler.UpdateTask)
+	taskRoutes.DELETE("/:id", handler.DeleteTask)
 }
