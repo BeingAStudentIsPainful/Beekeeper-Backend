@@ -20,6 +20,7 @@ func main() {
 	api := app.Group("/api")
 
 	routes.TaskRoutes(api, db)
+	routes.LogRoutes(api, db)
 
 	app.Run(":" + port)
 }
