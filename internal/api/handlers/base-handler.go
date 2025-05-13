@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"beekeeper-backend/internal/api/models"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -93,4 +94,17 @@ func (h *BaseHandler) DeleteEntry(c *gin.Context, model any) {
 	}
 
 	c.Status(204)
+}
+
+func (h *BaseHandler) CreateHiveRemote(c *gin.Context, input int) (*models.Hive, error) {
+	hive := models.Hive{
+		HiveName: input,
+	}
+
+	if err := h.DB.Create(&hive).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Could not create hive"})
+		return nil, err
+	}
+
+	return &hive, nil
 }

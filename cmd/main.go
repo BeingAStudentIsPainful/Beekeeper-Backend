@@ -21,6 +21,7 @@ func main() {
 
 	routes.TaskRoutes(api, db)
 	routes.LogRoutes(api, db)
+	routes.HiveRoutes(api, db)
 
 	app.Run(":" + port)
 }

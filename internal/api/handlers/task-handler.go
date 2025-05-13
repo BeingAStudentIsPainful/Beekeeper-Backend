@@ -3,9 +3,10 @@ package handlers
 import (
 	"beekeeper-backend/internal/api/models"
 	"beekeeper-backend/internal/types"
-
+	"errors"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type TaskHandler struct {
@@ -15,7 +16,7 @@ type TaskHandler struct {
 // Create task
 func (h *TaskHandler) CreateTask(c *gin.Context) {
 	var input types.CreateEntryInput
-	// var hive models.Hive
+	var hive models.Hive
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid input"})
@@ -27,14 +28,20 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 		Content: input.Content,
 	}
 
+	if err := h.DB.Where("hive_name = ?", task.HiveID).First(&hive).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			newHive, err := h.CreateHiveRemote(c, input.HiveID)
+			if err != nil {
+				c.JSON(500, gin.H{"error": "Could not create hive"})
+				return
+			}
+			hive = *newHive
+		} else {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+	}
 	
-// 	if err := h.DB.Where("hive_name = ?", task.HiveID).First(&hive).Error; err != nil {
-// 	h.CreateEntry(c, &hive)
-	
-// }
-
-	
-	// fmt.Println(hive)
 	h.CreateEntry(c, &task)
 }
 
