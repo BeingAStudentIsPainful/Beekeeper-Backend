@@ -4,6 +4,7 @@ import (
 	"beekeeper-backend/internal/api/models"
 	"beekeeper-backend/internal/types"
 
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,6 +15,7 @@ type TaskHandler struct {
 // Create task
 func (h *TaskHandler) CreateTask(c *gin.Context) {
 	var input types.CreateEntryInput
+	// var hive models.Hive
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid input"})
@@ -25,6 +27,14 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 		Content: input.Content,
 	}
 
+	
+// 	if err := h.DB.Where("hive_name = ?", task.HiveID).First(&hive).Error; err != nil {
+// 	h.CreateEntry(c, &hive)
+	
+// }
+
+	
+	// fmt.Println(hive)
 	h.CreateEntry(c, &task)
 }
 
