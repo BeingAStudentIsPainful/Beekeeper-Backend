@@ -9,11 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// TaskHandler handles all CRUD operations related to tasks.
 type TaskHandler struct {
 	BaseHandler
 }
 
-// Create task
+// CreateTask handles POST /tasks.
+// It creates a new task for a hive. If the hive does not exist, it is created remotely.
 func (h *TaskHandler) CreateTask(c *gin.Context) {
 	var input types.CreateEntryInput
 	var hive models.Hive
@@ -28,8 +30,10 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 		Content: input.Content,
 	}
 
+	// Check if hive exists
 	if err := h.DB.Where("hive_name = ?", task.HiveID).First(&hive).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// Create hive remotely if not found
 			newHive, err := h.CreateHiveRemote(c, input.HiveID)
 			if err != nil {
 				c.JSON(500, gin.H{"error": "Could not create hive"})
@@ -45,19 +49,22 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 	h.CreateEntry(c, &task)
 }
 
-// Get task by id
+// GetTaskByID handles GET /tasks/:id.
+// It retrieves a single task entry by its ID.
 func (h *TaskHandler) GetTaskByID(c *gin.Context) {
 	var task models.Task
 	h.GetEntryByID(c, &task)
 }
 
-// Get all tasks
+// GetAllTasks handles GET /tasks.
+// It returns all tasks from the database.
 func (h *TaskHandler) GetAllTasks(c *gin.Context) {
 	var tasks []models.Task
 	h.GetAllEntries(c, &tasks)
 }
 
-// Update task
+// UpdateTask handles PUT /tasks/:id.
+// It updates a task’s content and/or hive association.
 func (h *TaskHandler) UpdateTask(c *gin.Context) {
 
 	var task models.Task
@@ -75,7 +82,8 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 	})
 }
 
-// Delete task
+// DeleteTask handles DELETE /tasks/:id.
+// It deletes a task by its ID.
 func (h *TaskHandler) DeleteTask(c *gin.Context) {
 	var task models.Task
 	h.DeleteEntry(c, &task)

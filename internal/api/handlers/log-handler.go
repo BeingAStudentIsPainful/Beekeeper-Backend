@@ -9,11 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// LogHandler handles all CRUD operations for logs.
 type LogHandler struct {
 	BaseHandler
 }
 
-// Create log
+// CreateLog handles POST /logs.
+// It creates a new log entry. If the hive does not exist, it is created remotely.
 func (h *LogHandler) CreateLog(c *gin.Context) {
 	var input types.CreateEntryInput
 	var hive models.Hive
@@ -28,8 +30,10 @@ func (h *LogHandler) CreateLog(c *gin.Context) {
 		Content: input.Content,
 	}
 
+	// Check if the hive exists by HiveName 
 	if err := h.DB.Where("hive_name = ?", log.HiveID).First(&hive).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// Create hive remotely if not found
 			newHive, err := h.CreateHiveRemote(c, input.HiveID)
 			if err != nil {
 				c.JSON(500, gin.H{"error": "Could not create hive"})
@@ -45,19 +49,23 @@ func (h *LogHandler) CreateLog(c *gin.Context) {
 	h.CreateEntry(c, &log)
 }
 
-// Get log by id
+
+// GetLogByID handles GET /logs/:id.
+// It retrieves a log entry by its ID.
 func (h *LogHandler) GetLogByID(c *gin.Context) {
 	var log models.Log
 	h.GetEntryByID(c, &log)
 }
 
-// Get all logs
+// GetAllLogs handles GET /logs.
+// It retrieves all log entries from the database.
 func (h *LogHandler) GetAllLogs(c *gin.Context) {
 	var logs []models.Log
 	h.GetAllEntries(c, &logs)
 }
 
-// Update log
+// UpdateLog handles PUT /logs/:id.
+// It updates a log entry using provided JSON input.
 func (h *LogHandler) UpdateLog(c *gin.Context) {
 
 	var log models.Log
@@ -75,7 +83,8 @@ func (h *LogHandler) UpdateLog(c *gin.Context) {
 	})
 }
 
-// Delete log
+// DeleteLog handles DELETE /logs/:id.
+// It deletes a log entry by its ID.
 func (h *LogHandler) DeleteLog(c *gin.Context) {
 	var log models.Log
 	h.DeleteEntry(c, &log)

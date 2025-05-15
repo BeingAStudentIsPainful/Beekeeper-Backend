@@ -8,19 +8,22 @@ import (
 	"gorm.io/gorm"
 )
 
+// BaseHandler holds a database connection and provides common CRUD methods.
 type BaseHandler struct {
 	DB *gorm.DB
 }
 
+// CreateEntry inserts a new record into the database using the given model.
 func (h *BaseHandler) CreateEntry(c *gin.Context, model any) {
 	if err := h.DB.Create(model).Error; err != nil {
 		c.JSON(500, gin.H{"error": "Failed to create entry"})
 		return
 	}
-
+	
 	c.JSON(201, gin.H{"data": model})
 }
 
+// GetAllEntries retrieves all records of the given model type from the database.
 func (h *BaseHandler) GetAllEntries(c *gin.Context, model any) {
 	if err := h.DB.Find(model).Error; err != nil {
 		c.JSON(500, gin.H{"error": "Failed to retrieve entry"})
@@ -30,6 +33,7 @@ func (h *BaseHandler) GetAllEntries(c *gin.Context, model any) {
 	c.JSON(200, gin.H{"data": model})
 }
 
+// GetEntryByID finds a single record by its ID
 func (h *BaseHandler) GetEntryByID(c *gin.Context, model any) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -45,6 +49,7 @@ func (h *BaseHandler) GetEntryByID(c *gin.Context, model any) {
 	c.JSON(200, gin.H{"data": model})
 }
 
+// UpdateEntry updates a record by its ID using the provided input and applyChanges function.
 func (h *BaseHandler) UpdateEntry(
 	c *gin.Context,
 	model any,
@@ -76,6 +81,7 @@ func (h *BaseHandler) UpdateEntry(
 	c.JSON(200, gin.H{"data": model})
 }
 
+// DeleteEntry removes a record by its ID from the database.
 func (h *BaseHandler) DeleteEntry(c *gin.Context, model any) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -96,6 +102,7 @@ func (h *BaseHandler) DeleteEntry(c *gin.Context, model any) {
 	c.Status(204)
 }
 
+// CreateHiveRemote creates a new Hive record using the provided integer as HiveName.
 func (h *BaseHandler) CreateHiveRemote(c *gin.Context, input int) (*models.Hive, error) {
 	hive := models.Hive{
 		HiveName: input,
