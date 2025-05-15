@@ -15,4 +15,8 @@ func HiveRoutes(app *gin.RouterGroup, db *gorm.DB) {
 	taskRoutes := app.Group("/hives")
 
 	taskRoutes.POST("/", handler.CreateHive)
+	taskRoutes.GET("/", handler.GetAllHives)
+	taskRoutes.GET("/:id", handler.GetHiveByID)
+	taskRoutes.PATCH("/:id", handler.UpdateHive)
+	taskRoutes.DELETE("/:id", handler.DeleteHive)
 }

@@ -13,3 +13,7 @@ type UpdateEntryInput struct {
 type CreateHiveInput struct {
 	HiveName int `json:"hiveName" binding:"required"`
 }
+
+type UpdateHiveInput struct {
+	HiveName *int `json:"hiveName"`
+}

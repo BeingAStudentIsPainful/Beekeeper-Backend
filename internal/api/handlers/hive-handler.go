@@ -30,3 +30,31 @@ func (h *HiveHandler) CreateHive(c *gin.Context) {
 
 	c.JSON(201, gin.H{"data": hive})
 }
+
+func (h *HiveHandler) GetAllHives(c *gin.Context){
+	var hives []models.Hive
+	h.GetAllEntries(c, &hives)
+}
+
+func (h *HiveHandler) GetHiveByID(c *gin.Context){
+	var hive models.Hive
+	h.GetEntryByID(c, &hive)
+}
+
+func (h *HiveHandler) UpdateHive(c *gin.Context){
+	var hive models.Hive
+	var input types.UpdateHiveInput
+	h.UpdateEntry(c, &hive, &input, func(model any, input any){
+		h := model.(*models.Hive)
+		i := input.(*types.UpdateHiveInput)
+
+		if i.HiveName != nil{
+			h.HiveName = *i.HiveName
+		}
+	})
+}
+
+func (h *HiveHandler) DeleteHive(c *gin.Context){
+	var hive models.Hive
+	h.DeleteEntry(c, &hive)
+}

@@ -3,8 +3,10 @@ package handlers
 import (
 	"beekeeper-backend/internal/api/models"
 	"beekeeper-backend/internal/types"
+	"errors"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type LogHandler struct {
@@ -14,6 +16,7 @@ type LogHandler struct {
 // Create log
 func (h *LogHandler) CreateLog(c *gin.Context) {
 	var input types.CreateEntryInput
+	var hive models.Hive
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid input"})
@@ -23,6 +26,20 @@ func (h *LogHandler) CreateLog(c *gin.Context) {
 	log := models.Log{
 		HiveID:  input.HiveID,
 		Content: input.Content,
+	}
+
+	if err := h.DB.Where("hive_name = ?", log.HiveID).First(&hive).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			newHive, err := h.CreateHiveRemote(c, input.HiveID)
+			if err != nil {
+				c.JSON(500, gin.H{"error": "Could not create hive"})
+				return
+			}
+			hive = *newHive
+		} else {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	h.CreateEntry(c, &log)
