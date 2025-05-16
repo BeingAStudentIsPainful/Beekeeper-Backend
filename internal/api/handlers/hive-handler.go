@@ -3,6 +3,7 @@ package handlers
 import (
 	"beekeeper-backend/internal/api/models"
 	"beekeeper-backend/internal/types"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,13 +43,24 @@ func (h *HiveHandler) GetAllHives(c *gin.Context){
 }
 
 // GetHiveByID handles GET /hives/:id.
-// It retrieves a single hive by its ID.
+// It retrieves a single hive by its hive_name.
 func (h *HiveHandler) GetHiveByID(c *gin.Context){
 	var hive models.Hive
-	h.GetEntryByID(c, &hive)
+			id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	   if err := h.DB.Where("hive_name = ?", id).First(&hive).Error; err != nil {
+        c.JSON(404, gin.H{"error": "Entry not found"})
+        return
+    }
+
+	c.JSON(200, gin.H{"data": hive})
 }
 
-// UpdateHive handles PUT /hives/:id.
+// UpdateHive handles PATCH /hives/:id.
 // It updates a hive using provided JSON input.
 func (h *HiveHandler) UpdateHive(c *gin.Context){
 	var hive models.Hive
@@ -65,7 +77,7 @@ func (h *HiveHandler) UpdateHive(c *gin.Context){
 
 
 // DeleteHive handles DELETE /hives/:id.
-// It deletes a hive by its ID.
+// It deletes a hive by its hive_name.
 func (h *HiveHandler) DeleteHive(c *gin.Context){
 	var hive models.Hive
 	h.DeleteEntry(c, &hive)
