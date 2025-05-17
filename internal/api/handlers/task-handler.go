@@ -45,7 +45,7 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 			return
 		}
 	}
-	
+
 	h.CreateEntry(c, &task)
 }
 

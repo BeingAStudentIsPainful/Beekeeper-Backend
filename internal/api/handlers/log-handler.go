@@ -30,7 +30,7 @@ func (h *LogHandler) CreateLog(c *gin.Context) {
 		Content: input.Content,
 	}
 
-	// Check if the hive exists by HiveName 
+	// Check if the hive exists by HiveName
 	if err := h.DB.Where("hive_name = ?", log.HiveID).First(&hive).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			// Create hive remotely if not found
@@ -48,7 +48,6 @@ func (h *LogHandler) CreateLog(c *gin.Context) {
 
 	h.CreateEntry(c, &log)
 }
-
 
 // GetLogByID handles GET /logs/:id.
 // It retrieves a log entry by its ID.

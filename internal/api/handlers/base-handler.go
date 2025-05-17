@@ -19,7 +19,7 @@ func (h *BaseHandler) CreateEntry(c *gin.Context, model any) {
 		c.JSON(500, gin.H{"error": "Failed to create entry"})
 		return
 	}
-	
+
 	c.JSON(201, gin.H{"data": model})
 }
 
