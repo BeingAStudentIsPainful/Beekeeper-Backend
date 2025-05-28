@@ -63,6 +63,12 @@ func (h *TaskHandler) GetAllTasks(c *gin.Context) {
 	h.GetAllEntries(c, &tasks)
 }
 
+// GetLastTask handles GET /tasks/last
+func (h *TaskHandler) GetLastTask(c *gin.Context) {
+	var task models.Task
+	h.GetLastEntry(c, &task)
+}
+
 // UpdateTask handles PUT /tasks/:id.
 // It updates a task’s content and/or hive association.
 func (h *TaskHandler) UpdateTask(c *gin.Context) {

@@ -17,6 +17,7 @@ func TaskRoutes(app *gin.RouterGroup, db *gorm.DB) {
 	taskRoutes.POST("/", handler.CreateTask)
 	taskRoutes.GET("/", handler.GetAllTasks)
 	taskRoutes.GET("/:id", handler.GetTaskByID)
+	taskRoutes.GET("/last", handler.GetLastTask)
 	taskRoutes.PATCH("/:id", handler.UpdateTask)
 	taskRoutes.DELETE("/:id", handler.DeleteTask)
 }

@@ -49,6 +49,15 @@ func (h *BaseHandler) GetEntryByID(c *gin.Context, model any) {
 	c.JSON(200, gin.H{"data": model})
 }
 
+// GetLastEntry finds last record in the DB
+func (h *BaseHandler) GetLastEntry(c *gin.Context, model any) {
+	if err := h.DB.Order("created_at DESC").First(&model).Error; err != nil {
+		c.JSON(404, gin.H{"error": "Entry not found"})
+		return
+	}
+	c.JSON(200, gin.H{"data": model})
+}
+
 // UpdateEntry updates a record by its ID using the provided input and applyChanges function.
 func (h *BaseHandler) UpdateEntry(
 	c *gin.Context,

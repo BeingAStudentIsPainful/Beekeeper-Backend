@@ -63,6 +63,12 @@ func (h *LogHandler) GetAllLogs(c *gin.Context) {
 	h.GetAllEntries(c, &logs)
 }
 
+// GetLastLog handles GET /logs/last
+func (h *LogHandler) GetLastLog(c *gin.Context) {
+	var log models.Log
+	h.GetLastEntry(c, &log)
+}
+
 // UpdateLog handles PUT /logs/:id.
 // It updates a log entry using provided JSON input.
 func (h *LogHandler) UpdateLog(c *gin.Context) {

@@ -17,6 +17,7 @@ func LogRoutes(app *gin.RouterGroup, db *gorm.DB) {
 	logRoutes.POST("/", handler.CreateLog)
 	logRoutes.GET("/", handler.GetAllLogs)
 	logRoutes.GET("/:id", handler.GetLogByID)
+	logRoutes.GET("/last", handler.GetLastLog)
 	logRoutes.PATCH("/:id", handler.UpdateLog)
 	logRoutes.DELETE("/:id", handler.DeleteLog)
 }
