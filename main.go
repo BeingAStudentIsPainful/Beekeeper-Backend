@@ -1,27 +1,57 @@
 package main
 
 import (
-	"beekeeper-backend/internal/api/routes"
-	"beekeeper-backend/internal/config"
-	"os"
+    "beekeeper-backend/docs" // This will be generated
+    "beekeeper-backend/internal/api/routes"
+    "beekeeper-backend/internal/config"
+    "os"
 
-	"github.com/gin-gonic/gin"
+    "github.com/gin-gonic/gin"
+    ginSwagger "github.com/swaggo/gin-swagger"
+    "github.com/swaggo/files"
 )
 
+// @title           Beekeeper API
+// @version         1.0
+// @description     A beekeeping management API built with Go and Gin framework
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.url    http://www.swagger.io/support
+// @contact.email  support@swagger.io
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8000
+// @BasePath  /api
+
+// @securityDefinitions.basic  BasicAuth
+
 func main() {
-	db := config.Initialization()
+    db := config.Initialization()
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8000"
+    }
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8000"
-	}
+    app := gin.Default()
 
-	app := gin.Default()
-	api := app.Group("/api")
+    // Swagger documentation route
+    app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	routes.TaskRoutes(api, db)
-	routes.LogRoutes(api, db)
-	routes.HiveRoutes(api, db)
+    api := app.Group("/api")
+    routes.TaskRoutes(api, db)
+    routes.LogRoutes(api, db)
+    routes.HiveRoutes(api, db)
 
-	app.Run(":" + port)
+    // Programmatically set swagger info
+    docs.SwaggerInfo.Title = "Beekeeper API"
+    docs.SwaggerInfo.Description = "A beekeeping management API built with Go and Gin framework"
+    docs.SwaggerInfo.Version = "1.0"
+    docs.SwaggerInfo.Host = "localhost:" + port
+    docs.SwaggerInfo.BasePath = "/api"
+    docs.SwaggerInfo.Schemes = []string{"http", "https"}
+
+    app.Run(":" + port)
 }

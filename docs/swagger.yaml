@@ -1,0 +1,197 @@
+basePath: /api
+definitions:
+  types.CreateHiveInput:
+    properties:
+      hiveName:
+        type: integer
+    required:
+    - hiveName
+    type: object
+  types.UpdateHiveInput:
+    properties:
+      hiveName:
+        type: integer
+    type: object
+host: localhost:8000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: A beekeeping management API built with Go and Gin framework
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Beekeeper API
+  version: "1.0"
+paths:
+  /hives:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all hives
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of hives
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve hives
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List all hives
+      tags:
+      - hives
+    post:
+      consumes:
+      - application/json
+      description: Create a new hive with the provided information
+      parameters:
+      - description: Hive data
+        in: body
+        name: hive
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateHiveInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created hive
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Could not create hive
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new hive
+      tags:
+      - hives
+  /hives/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a hive by its ID
+      parameters:
+      - description: Hive ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully deleted
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Hive not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete hive
+      tags:
+      - hives
+    get:
+      consumes:
+      - application/json
+      description: Get a single hive by its hive name/ID
+      parameters:
+      - description: Hive ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Hive details
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Hive not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get hive by ID
+      tags:
+      - hives
+    patch:
+      consumes:
+      - application/json
+      description: Update an existing hive by its ID
+      parameters:
+      - description: Hive ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated hive data
+        in: body
+        name: hive
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateHiveInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated hive
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid ID or input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Hive not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to save
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update hive
+      tags:
+      - hives
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
