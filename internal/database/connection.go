@@ -8,15 +8,13 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-func ConnectDatabase() {
-	database, err := gorm.Open(sqlite.Open("../internal/database/beekeeper-database.db"), &gorm.Config{})
+func ConnectDatabase() *gorm.DB {
+	db, err := gorm.Open(sqlite.Open("./internal/database/beekeeper-database.db"), &gorm.Config{})
 	if err != nil {
 		fmt.Print(err)
-		return
+		log.Fatal("Failed to connect to the Database")
 	}
 
-	DB = database
 	log.Println("Database connection established")
+	return db
 }
