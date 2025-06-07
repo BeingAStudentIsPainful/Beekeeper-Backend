@@ -1,0 +1,640 @@
+basePath: /api
+definitions:
+  models.Log:
+    properties:
+      content:
+        example: Hive inspection completed. Queen spotted, brood pattern looks healthy.
+        type: string
+      created_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+      hive_id:
+        example: 123
+        type: integer
+      id:
+        example: 1
+        type: integer
+      updated_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+    type: object
+  models.Task:
+    properties:
+      content:
+        example: Check honey levels and replace frames
+        type: string
+      created_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+      hive_id:
+        example: 123
+        type: integer
+      id:
+        example: 1
+        type: integer
+      updated_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+    type: object
+  types.CreateEntryInput:
+    properties:
+      content:
+        type: string
+      hiveID:
+        type: integer
+    required:
+    - content
+    - hiveID
+    type: object
+  types.CreateHiveInput:
+    properties:
+      hiveName:
+        type: integer
+    required:
+    - hiveName
+    type: object
+  types.UpdateEntryInput:
+    properties:
+      content:
+        type: string
+      hiveID:
+        type: integer
+    type: object
+  types.UpdateHiveInput:
+    properties:
+      hiveName:
+        type: integer
+    type: object
+host: localhost:8000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: A beekeeping management API built with Go and Gin framework
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Beekeeper API
+  version: "1.0"
+paths:
+  /hives:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all hives
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of hives
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve hives
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List all hives
+      tags:
+      - hives
+    post:
+      consumes:
+      - application/json
+      description: Create a new hive with the provided information
+      parameters:
+      - description: Hive data
+        in: body
+        name: hive
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateHiveInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created hive
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Could not create hive
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new hive
+      tags:
+      - hives
+  /hives/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a hive by its ID
+      parameters:
+      - description: Hive ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully deleted
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Hive not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete hive
+      tags:
+      - hives
+    get:
+      consumes:
+      - application/json
+      description: Get a single hive by its hive name/ID, NOT by entry's ID
+      parameters:
+      - description: Hive ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Hive details
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Hive not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get hive by it's name/ID
+      tags:
+      - hives
+    patch:
+      consumes:
+      - application/json
+      description: Update an existing hive by its ID
+      parameters:
+      - description: Hive ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated hive data
+        in: body
+        name: hive
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateHiveInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated hive
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid ID or input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Hive not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to save
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update hive
+      tags:
+      - hives
+  /logs:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all log entries from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved all logs
+          schema:
+            additionalProperties:
+              items:
+                $ref: '#/definitions/models.Log'
+              type: array
+            type: object
+        "500":
+          description: Failed to retrieve logs
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all log entries
+      tags:
+      - logs
+    post:
+      consumes:
+      - application/json
+      description: Create a new log entry for a hive. If the hive doesn't exist, it
+        will be created automatically.
+      parameters:
+      - description: Log creation data
+        in: body
+        name: log
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateEntryInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created log
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/models.Log'
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new log entry
+      tags:
+      - logs
+  /logs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a log entry by ID
+      parameters:
+      - description: Log ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully deleted log
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Log not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a log entry
+      tags:
+      - logs
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific log entry by its ID
+      parameters:
+      - description: Log ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved log
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/models.Log'
+            type: object
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Log not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a log entry by ID
+      tags:
+      - logs
+    put:
+      consumes:
+      - application/json
+      description: Update an existing log entry by ID
+      parameters:
+      - description: Log ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Log update data
+        in: body
+        name: log
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateEntryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated log
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/models.Log'
+            type: object
+        "400":
+          description: Invalid ID or input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Log not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to update log
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a log entry
+      tags:
+      - logs
+  /logs/last:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the last log entry based on creation time
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved last log
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/models.Log'
+            type: object
+        "404":
+          description: No logs found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get the most recent log entry
+      tags:
+      - logs
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all tasks from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved all tasks
+          schema:
+            additionalProperties:
+              items:
+                $ref: '#/definitions/models.Task'
+              type: array
+            type: object
+        "500":
+          description: Failed to retrieve tasks
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all tasks
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Create a new task for a hive. If the hive doesn't exist, it will
+        be created automatically.
+      parameters:
+      - description: Task creation data
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateEntryInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created task
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/models.Task'
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new task
+      tags:
+      - tasks
+  /tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a task by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully deleted task
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Task not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a task
+      tags:
+      - tasks
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific task by its ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved task
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/models.Task'
+            type: object
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Task not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a task by ID
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Update an existing task by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Task update data
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateEntryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated task
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/models.Task'
+            type: object
+        "400":
+          description: Invalid ID or input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Task not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to update task
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a task
+      tags:
+      - tasks
+  /tasks/last:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the last task based on creation time
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved last task
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/models.Task'
+            type: object
+        "404":
+          description: No tasks found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get the most recent task
+      tags:
+      - tasks
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

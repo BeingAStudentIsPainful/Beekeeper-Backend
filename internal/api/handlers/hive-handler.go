@@ -14,10 +14,18 @@ type HiveHandler struct {
 }
 
 // CreateHive handles POST /hives.
-// It creates a new hive based on JSON input.
+// @Summary      Create a new hive
+// @Description  Create a new hive with the provided information
+// @Tags         hives
+// @Accept       json
+// @Produce      json
+// @Param        hive  body      types.CreateHiveInput  true  "Hive data"
+// @Success      201   {object}  map[string]interface{}  "Successfully created hive"
+// @Failure      400   {object}  map[string]string       "Invalid input"
+// @Failure      500   {object}  map[string]string       "Could not create hive"
+// @Router       /hives [post]
 func (h *HiveHandler) CreateHive(c *gin.Context) {
 	var input types.CreateHiveInput
-
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid input"})
 		return
@@ -36,14 +44,30 @@ func (h *HiveHandler) CreateHive(c *gin.Context) {
 }
 
 // GetAllHives handles GET /hives.
-// It retrieves and returns all hives from the database.
+// @Summary      List all hives
+// @Description  Get a list of all hives
+// @Tags         hives
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  map[string]interface{}  "List of hives"
+// @Failure      500  {object}  map[string]string       "Failed to retrieve hives"
+// @Router       /hives [get]
 func (h *HiveHandler) GetAllHives(c *gin.Context) {
 	var hives []models.Hive
 	h.GetAllEntries(c, &hives)
 }
 
 // GetHiveByID handles GET /hives/:id.
-// It retrieves a single hive by its hive_name.
+// @Summary      Get hive by it's name/ID
+// @Description  Get a single hive by its hive name/ID, NOT by entry's ID
+// @Tags         hives
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Hive ID"
+// @Success      200  {object}  map[string]interface{}  "Hive details"
+// @Failure      400  {object}  map[string]string       "Invalid ID"
+// @Failure      404  {object}  map[string]string       "Hive not found"
+// @Router       /hives/{id} [get]
 func (h *HiveHandler) GetHiveByID(c *gin.Context) {
 	var hive models.Hive
 	id, err := strconv.Atoi(c.Param("id"))
@@ -61,7 +85,18 @@ func (h *HiveHandler) GetHiveByID(c *gin.Context) {
 }
 
 // UpdateHive handles PATCH /hives/:id.
-// It updates a hive using provided JSON input.
+// @Summary      Update hive
+// @Description  Update an existing hive by its ID
+// @Tags         hives
+// @Accept       json
+// @Produce      json
+// @Param        id    path      int                     true  "Hive ID"
+// @Param        hive  body      types.UpdateHiveInput   true  "Updated hive data"
+// @Success      200   {object}  map[string]interface{}  "Updated hive"
+// @Failure      400   {object}  map[string]string       "Invalid ID or input"
+// @Failure      404   {object}  map[string]string       "Hive not found"
+// @Failure      500   {object}  map[string]string       "Failed to save"
+// @Router       /hives/{id} [patch]
 func (h *HiveHandler) UpdateHive(c *gin.Context) {
 	var hive models.Hive
 	var input types.UpdateHiveInput
@@ -89,11 +124,19 @@ func (h *HiveHandler) UpdateHive(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"data": hive})
-
 }
 
 // DeleteHive handles DELETE /hives/:id.
-// It deletes a hive by its hive_name.
+// @Summary      Delete hive
+// @Description  Delete a hive by its ID
+// @Tags         hives
+// @Accept       json
+// @Produce      json
+// @Param        id  path  int  true  "Hive ID"
+// @Success      204  "Successfully deleted"
+// @Failure      400  {object}  map[string]string  "Invalid ID"
+// @Failure      404  {object}  map[string]string  "Hive not found"
+// @Router       /hives/{id} [delete]
 func (h *HiveHandler) DeleteHive(c *gin.Context) {
 	var hive models.Hive
 	id, err := strconv.Atoi(c.Param("id"))

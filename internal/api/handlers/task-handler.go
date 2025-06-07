@@ -4,7 +4,6 @@ import (
 	"beekeeper-backend/internal/api/models"
 	"beekeeper-backend/internal/types"
 	"errors"
-
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -15,7 +14,16 @@ type TaskHandler struct {
 }
 
 // CreateTask handles POST /tasks.
-// It creates a new task for a hive. If the hive does not exist, it is created remotely.
+// @Summary Create a new task
+// @Description Create a new task for a hive. If the hive doesn't exist, it will be created automatically.
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param task body types.CreateEntryInput true "Task creation data"
+// @Success 201 {object} map[string]models.Task "Successfully created task"
+// @Failure 400 {object} map[string]string "Invalid input"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /tasks [post]
 func (h *TaskHandler) CreateTask(c *gin.Context) {
 	var input types.CreateEntryInput
 	var hive models.Hive
@@ -50,35 +58,69 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 }
 
 // GetTaskByID handles GET /tasks/:id.
-// It retrieves a single task entry by its ID.
+// @Summary Get a task by ID
+// @Description Retrieve a specific task by its ID
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path int true "Task ID"
+// @Success 200 {object} map[string]models.Task "Successfully retrieved task"
+// @Failure 400 {object} map[string]string "Invalid ID"
+// @Failure 404 {object} map[string]string "Task not found"
+// @Router /tasks/{id} [get]
 func (h *TaskHandler) GetTaskByID(c *gin.Context) {
 	var task models.Task
 	h.GetEntryByID(c, &task)
 }
 
 // GetAllTasks handles GET /tasks.
-// It returns all tasks from the database.
+// @Summary Get all tasks
+// @Description Retrieve all tasks from the database
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string][]models.Task "Successfully retrieved all tasks"
+// @Failure 500 {object} map[string]string "Failed to retrieve tasks"
+// @Router /tasks [get]
 func (h *TaskHandler) GetAllTasks(c *gin.Context) {
 	var tasks []models.Task
 	h.GetAllEntries(c, &tasks)
 }
 
 // GetLastTask handles GET /tasks/last
+// @Summary Get the most recent task
+// @Description Retrieve the last task based on creation time
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]models.Task "Successfully retrieved last task"
+// @Failure 404 {object} map[string]string "No tasks found"
+// @Router /tasks/last [get]
 func (h *TaskHandler) GetLastTask(c *gin.Context) {
 	var task models.Task
 	h.GetLastEntry(c, &task)
 }
 
 // UpdateTask handles PUT /tasks/:id.
-// It updates a task’s content and/or hive association.
+// @Summary Update a task
+// @Description Update an existing task by ID
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path int true "Task ID"
+// @Param task body types.UpdateEntryInput true "Task update data"
+// @Success 200 {object} map[string]models.Task "Successfully updated task"
+// @Failure 400 {object} map[string]string "Invalid ID or input"
+// @Failure 404 {object} map[string]string "Task not found"
+// @Failure 500 {object} map[string]string "Failed to update task"
+// @Router /tasks/{id} [put]
 func (h *TaskHandler) UpdateTask(c *gin.Context) {
-
 	var task models.Task
 	var input types.UpdateEntryInput
+
 	h.UpdateEntry(c, &task, &input, func(model any, input any) {
 		t := model.(*models.Task)
 		i := input.(*types.UpdateEntryInput)
-
 		if i.Content != nil {
 			t.Content = *i.Content
 		}
@@ -89,7 +131,16 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 }
 
 // DeleteTask handles DELETE /tasks/:id.
-// It deletes a task by its ID.
+// @Summary Delete a task
+// @Description Delete a task by ID
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path int true "Task ID"
+// @Success 204 "Successfully deleted task"
+// @Failure 400 {object} map[string]string "Invalid ID"
+// @Failure 404 {object} map[string]string "Task not found"
+// @Router /tasks/{id} [delete]
 func (h *TaskHandler) DeleteTask(c *gin.Context) {
 	var task models.Task
 	h.DeleteEntry(c, &task)
