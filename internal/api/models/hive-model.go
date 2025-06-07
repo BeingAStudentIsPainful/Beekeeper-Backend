@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// Hive represents a beehive in the management system
 type Hive struct {
 	ID        uint      `json:"id" gorm:"primaryKey" example:"1"`
 	HiveName  int       `json:"hive_name" gorm:"not null" example:"123"`

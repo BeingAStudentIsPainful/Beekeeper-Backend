@@ -1,7 +1,7 @@
 package main
 
 import (
-	"beekeeper-backend/docs" // This will be generated
+	"beekeeper-backend/docs"
 	"beekeeper-backend/internal/api/routes"
 	"beekeeper-backend/internal/config"
 	"os"

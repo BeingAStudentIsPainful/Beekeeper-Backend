@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// Task represents a task entry for a beehive
 type Task struct {
 	ID        uint      `json:"id" gorm:"primaryKey" example:"1"`
 	HiveID    int       `json:"hive_id" gorm:"not null" example:"123"`
