@@ -10,7 +10,7 @@ import (
 
 // HiveHandler provides CRUD operations for hive-related data.
 type HiveHandler struct {
-    BaseHandler
+	BaseHandler
 }
 
 // CreateHive handles POST /hives.
@@ -25,22 +25,22 @@ type HiveHandler struct {
 // @Failure      500   {object}  map[string]string       "Could not create hive"
 // @Router       /hives [post]
 func (h *HiveHandler) CreateHive(c *gin.Context) {
-    var input types.CreateHiveInput
-    if err := c.ShouldBindJSON(&input); err != nil {
-        c.JSON(400, gin.H{"error": "Invalid input"})
-        return
-    }
+	var input types.CreateHiveInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid input"})
+		return
+	}
 
-    hive := models.Hive{
-        HiveName: input.HiveName,
-    }
+	hive := models.Hive{
+		HiveName: input.HiveName,
+	}
 
-    if err := h.DB.Create(&hive).Error; err != nil {
-        c.JSON(500, gin.H{"error": "Could not create hive"})
-        return
-    }
+	if err := h.DB.Create(&hive).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Could not create hive"})
+		return
+	}
 
-    c.JSON(201, gin.H{"data": hive})
+	c.JSON(201, gin.H{"data": hive})
 }
 
 // GetAllHives handles GET /hives.
@@ -53,8 +53,8 @@ func (h *HiveHandler) CreateHive(c *gin.Context) {
 // @Failure      500  {object}  map[string]string       "Failed to retrieve hives"
 // @Router       /hives [get]
 func (h *HiveHandler) GetAllHives(c *gin.Context) {
-    var hives []models.Hive
-    h.GetAllEntries(c, &hives)
+	var hives []models.Hive
+	h.GetAllEntries(c, &hives)
 }
 
 // GetHiveByID handles GET /hives/:id.
@@ -69,19 +69,19 @@ func (h *HiveHandler) GetAllHives(c *gin.Context) {
 // @Failure      404  {object}  map[string]string       "Hive not found"
 // @Router       /hives/{id} [get]
 func (h *HiveHandler) GetHiveByID(c *gin.Context) {
-    var hive models.Hive
-    id, err := strconv.Atoi(c.Param("id"))
-    if err != nil {
-        c.JSON(400, gin.H{"error": "Invalid ID"})
-        return
-    }
+	var hive models.Hive
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid ID"})
+		return
+	}
 
-    if err := h.DB.Where("hive_name = ?", id).First(&hive).Error; err != nil {
-        c.JSON(404, gin.H{"error": "Entry not found"})
-        return
-    }
+	if err := h.DB.Where("hive_name = ?", id).First(&hive).Error; err != nil {
+		c.JSON(404, gin.H{"error": "Entry not found"})
+		return
+	}
 
-    c.JSON(200, gin.H{"data": hive})
+	c.JSON(200, gin.H{"data": hive})
 }
 
 // UpdateHive handles PATCH /hives/:id.
@@ -98,32 +98,32 @@ func (h *HiveHandler) GetHiveByID(c *gin.Context) {
 // @Failure      500   {object}  map[string]string       "Failed to save"
 // @Router       /hives/{id} [patch]
 func (h *HiveHandler) UpdateHive(c *gin.Context) {
-    var hive models.Hive
-    var input types.UpdateHiveInput
-    id, err := strconv.Atoi(c.Param("id"))
-    if err != nil {
-        c.JSON(400, gin.H{"error": "Invalid ID"})
-        return
-    }
+	var hive models.Hive
+	var input types.UpdateHiveInput
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid ID"})
+		return
+	}
 
-    if err := h.DB.Where("hive_name = ?", id).First(&hive).Error; err != nil {
-        c.JSON(404, gin.H{"error": "Entry not found"})
-        return
-    }
+	if err := h.DB.Where("hive_name = ?", id).First(&hive).Error; err != nil {
+		c.JSON(404, gin.H{"error": "Entry not found"})
+		return
+	}
 
-    if err := c.ShouldBindJSON(&input); err != nil {
-        c.JSON(400, gin.H{"error": "Invalid input"})
-        return
-    }
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid input"})
+		return
+	}
 
-    hive.HiveName = *input.HiveName
+	hive.HiveName = *input.HiveName
 
-    if err := h.DB.Save(&hive).Error; err != nil {
-        c.JSON(500, gin.H{"error": "Failed to save"})
-        return
-    }
+	if err := h.DB.Save(&hive).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Failed to save"})
+		return
+	}
 
-    c.JSON(200, gin.H{"data": hive})
+	c.JSON(200, gin.H{"data": hive})
 }
 
 // DeleteHive handles DELETE /hives/:id.
@@ -138,22 +138,22 @@ func (h *HiveHandler) UpdateHive(c *gin.Context) {
 // @Failure      404  {object}  map[string]string  "Hive not found"
 // @Router       /hives/{id} [delete]
 func (h *HiveHandler) DeleteHive(c *gin.Context) {
-    var hive models.Hive
-    id, err := strconv.Atoi(c.Param("id"))
-    if err != nil {
-        c.JSON(400, gin.H{"error": "Invalid ID"})
-        return
-    }
+	var hive models.Hive
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid ID"})
+		return
+	}
 
-    if err := h.DB.Where("hive_name = ?", id).First(&hive).Error; err != nil {
-        c.JSON(404, gin.H{"error": "Entry not found"})
-        return
-    }
+	if err := h.DB.Where("hive_name = ?", id).First(&hive).Error; err != nil {
+		c.JSON(404, gin.H{"error": "Entry not found"})
+		return
+	}
 
-    if err := h.DB.Delete(&hive).Error; err != nil {
-        c.JSON(404, gin.H{"error": "Failed to delete hive"})
-        return
-    }
+	if err := h.DB.Delete(&hive).Error; err != nil {
+		c.JSON(404, gin.H{"error": "Failed to delete hive"})
+		return
+	}
 
-    c.Status(204)
+	c.Status(204)
 }

@@ -1,14 +1,14 @@
 package main
 
 import (
-    "beekeeper-backend/docs" // This will be generated
-    "beekeeper-backend/internal/api/routes"
-    "beekeeper-backend/internal/config"
-    "os"
+	"beekeeper-backend/docs" // This will be generated
+	"beekeeper-backend/internal/api/routes"
+	"beekeeper-backend/internal/config"
+	"os"
 
-    "github.com/gin-gonic/gin"
-    ginSwagger "github.com/swaggo/gin-swagger"
-    "github.com/swaggo/files"
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // @title           Beekeeper API
@@ -29,29 +29,29 @@ import (
 // @securityDefinitions.basic  BasicAuth
 
 func main() {
-    db := config.Initialization()
-    port := os.Getenv("PORT")
-    if port == "" {
-        port = "8000"
-    }
+	db := config.Initialization()
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
 
-    app := gin.Default()
+	app := gin.Default()
 
-    // Swagger documentation route
-    app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// Swagger documentation route
+	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-    api := app.Group("/api")
-    routes.TaskRoutes(api, db)
-    routes.LogRoutes(api, db)
-    routes.HiveRoutes(api, db)
+	api := app.Group("/api")
+	routes.TaskRoutes(api, db)
+	routes.LogRoutes(api, db)
+	routes.HiveRoutes(api, db)
 
-    // Programmatically set swagger info
-    docs.SwaggerInfo.Title = "Beekeeper API"
-    docs.SwaggerInfo.Description = "A beekeeping management API built with Go and Gin framework"
-    docs.SwaggerInfo.Version = "1.0"
-    docs.SwaggerInfo.Host = "localhost:" + port
-    docs.SwaggerInfo.BasePath = "/api"
-    docs.SwaggerInfo.Schemes = []string{"http", "https"}
+	// Programmatically set swagger info
+	docs.SwaggerInfo.Title = "Beekeeper API"
+	docs.SwaggerInfo.Description = "A beekeeping management API built with Go and Gin framework"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "localhost:" + port
+	docs.SwaggerInfo.BasePath = "/api"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
-    app.Run(":" + port)
+	app.Run(":" + port)
 }
