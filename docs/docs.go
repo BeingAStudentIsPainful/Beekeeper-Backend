@@ -110,7 +110,7 @@ const docTemplate = `{
         },
         "/hives/{id}": {
             "get": {
-                "description": "Get a single hive by its hive name/ID",
+                "description": "Get a single hive by its hive name/ID, NOT by entry's ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -120,7 +120,7 @@ const docTemplate = `{
                 "tags": [
                     "hives"
                 ],
-                "summary": "Get hive by ID",
+                "summary": "Get hive by it's name/ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -863,19 +863,24 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "content": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Hive inspection completed. Queen spotted, brood pattern looks healthy."
                 },
-                "createdAt": {
-                    "type": "string"
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-01-15T10:30:00Z"
                 },
-                "hiveID": {
-                    "type": "integer"
+                "hive_id": {
+                    "type": "integer",
+                    "example": 123
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
-                "updatedAt": {
-                    "type": "string"
+                "updated_at": {
+                    "type": "string",
+                    "example": "2024-01-15T10:30:00Z"
                 }
             }
         },
@@ -883,19 +888,24 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "content": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Check honey levels and replace frames"
                 },
-                "createdAt": {
-                    "type": "string"
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-01-15T10:30:00Z"
                 },
-                "hiveID": {
-                    "type": "integer"
+                "hive_id": {
+                    "type": "integer",
+                    "example": 123
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
-                "updatedAt": {
-                    "type": "string"
+                "updated_at": {
+                    "type": "string",
+                    "example": "2024-01-15T10:30:00Z"
                 }
             }
         },

@@ -3,27 +3,37 @@ definitions:
   models.Log:
     properties:
       content:
+        example: Hive inspection completed. Queen spotted, brood pattern looks healthy.
         type: string
-      createdAt:
+      created_at:
+        example: "2024-01-15T10:30:00Z"
         type: string
-      hiveID:
+      hive_id:
+        example: 123
         type: integer
       id:
+        example: 1
         type: integer
-      updatedAt:
+      updated_at:
+        example: "2024-01-15T10:30:00Z"
         type: string
     type: object
   models.Task:
     properties:
       content:
+        example: Check honey levels and replace frames
         type: string
-      createdAt:
+      created_at:
+        example: "2024-01-15T10:30:00Z"
         type: string
-      hiveID:
+      hive_id:
+        example: 123
         type: integer
       id:
+        example: 1
         type: integer
-      updatedAt:
+      updated_at:
+        example: "2024-01-15T10:30:00Z"
         type: string
     type: object
   types.CreateEntryInput:
@@ -159,7 +169,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a single hive by its hive name/ID
+      description: Get a single hive by its hive name/ID, NOT by entry's ID
       parameters:
       - description: Hive ID
         in: path
@@ -186,7 +196,7 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Get hive by ID
+      summary: Get hive by it's name/ID
       tags:
       - hives
     patch:

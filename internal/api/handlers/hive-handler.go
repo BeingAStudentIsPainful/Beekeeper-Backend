@@ -58,8 +58,8 @@ func (h *HiveHandler) GetAllHives(c *gin.Context) {
 }
 
 // GetHiveByID handles GET /hives/:id.
-// @Summary      Get hive by ID
-// @Description  Get a single hive by its hive name/ID
+// @Summary      Get hive by it's name/ID
+// @Description  Get a single hive by its hive name/ID, NOT by entry's ID
 // @Tags         hives
 // @Accept       json
 // @Produce      json
