@@ -9,7 +9,7 @@ import (
 )
 
 func ConnectDatabase() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("../internal/database/beekeeper-database.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("./internal/database/beekeeper-database.db"), &gorm.Config{})
 	if err != nil {
 		fmt.Print(err)
 		log.Fatal("Failed to connect to the Database")
